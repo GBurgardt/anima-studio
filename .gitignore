@@ -1,0 +1,14 @@
+.DS_Store
+.build/
+.swiftpm/
+dist/
+private/
+*.local.json
+.env*
+*.log
+*.mp4
+*.mov
+*.mkv
+*.pem
+*.p12
+node_modules/
