@@ -6,6 +6,11 @@ A native remote control panel for a two-computer streaming setup. Keep OBS,
 encoding and recording on a dedicated machine. Switch scenes, send one monitor
 and frame your vertical stream from the computer you're actually using.
 
+![Anima Studio native panel with labelled example sources](promo/assets/panel-zoom.png)
+
+**[Watch / download the 56-second demo](https://github.com/GBurgardt/anima-studio/releases/download/v0.1.0/anima-studio-demo.mp4)**
+— silent explainer with example sources, not a public broadcast.
+
 ```text
 YOUR MAIN MAC                         YOUR STREAMING SERVER
 Anima Studio  ─── SSH controls ──────→ Node bridge → OBS

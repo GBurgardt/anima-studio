@@ -1,10 +1,91 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {validateConfig} from './config.mjs';
-import {validateIntent,createController} from './controller.mjs';
-const base={profile:'Anima',collection:'Anima',microphone:'Mic',recordingDirectory:'/tmp/anima',scenes:{charla:'Talk',pantalla:'Screen',pausa:'Pause'},outputs:[]};
-test('config supports no platform or vertical plugin',()=>assert.equal(validateConfig({...base}).profile,'Anima'));
-test('reject public OBS and duplicate output',()=>{assert.throws(()=>validateConfig({...base,obs:{url:'ws://example.com:4455'}}));assert.throws(()=>validateConfig({...base,outputs:[{kind:'main',label:'a'},{kind:'main',label:'b'}]}))});
-test('public transitions require explicit intent',()=>{assert.throws(()=>validateIntent({cmd:'live-start'}));assert.throws(()=>validateIntent({cmd:'live-stop'}));assert.throws(()=>validateIntent({cmd:'shell'}));assert.doesNotThrow(()=>validateIntent({cmd:'live-start',confirmation:'START_CONFIGURED_OUTPUTS',checkedPictureAndVoice:true}))});
-test('wrong profile blocks modifications',async()=>{const writes=[];const obs={call:async(m)=>{writes.push(m);return m==='GetProfileList'?{currentProfileName:'Other'}:{currentSceneCollectionName:'Anima'}}};const c=await createController(base,obs);await assert.rejects(c.dispatch({cmd:'scene',scene:'pantalla'}));assert.deepEqual(writes,['GetProfileList','GetSceneCollectionList'])});
-test('horizontal-only status works without plugins and never starts outputs',async()=>{const calls=[];const obs={call:async(m)=>{calls.push(m);switch(m){case'GetProfileList':return{currentProfileName:'Anima'};case'GetSceneCollectionList':return{currentSceneCollectionName:'Anima'};case'GetRecordStatus':return{outputActive:false};case'GetCurrentProgramScene':return{currentProgramSceneName:'Talk'};case'GetStats':return{availableDiskSpace:10240,activeFps:30};case'GetInputMute':return{inputMuted:false};case'GetStreamStatus':return{outputActive:false};case'GetOutputList':return{outputs:[]};case'GetSourceScreenshot':return{imageData:'data:image/jpeg;base64,AA=='};default:throw Error(m)}}};const c=await createController(base,obs);const s=await c.dispatch({cmd:'prepare'});assert.equal(s.sceneKey,'charla');assert.equal(s.verticalEnabled,false);assert.ok(!calls.some(x=>x.startsWith('Start')||x==='CallVendorRequest'))});
+import test from "node:test";
+import assert from "node:assert/strict";
+import { validateConfig } from "./config.mjs";
+import { validateIntent, createController } from "./controller.mjs";
+const base = {
+  profile: "Anima",
+  collection: "Anima",
+  microphone: "Mic",
+  recordingDirectory: "/tmp/anima",
+  scenes: { charla: "Talk", pantalla: "Screen", pausa: "Pause" },
+  outputs: [],
+};
+test("config supports no platform or vertical plugin", () =>
+  assert.equal(validateConfig({ ...base }).profile, "Anima"));
+test("reject public OBS and duplicate output", () => {
+  assert.throws(() =>
+    validateConfig({ ...base, obs: { url: "ws://example.com:4455" } }),
+  );
+  assert.throws(() =>
+    validateConfig({
+      ...base,
+      outputs: [
+        { kind: "main", label: "a" },
+        { kind: "main", label: "b" },
+      ],
+    }),
+  );
+});
+test("public transitions require explicit intent", () => {
+  assert.throws(() => validateIntent({ cmd: "live-start" }));
+  assert.throws(() => validateIntent({ cmd: "live-stop" }));
+  assert.throws(() => validateIntent({ cmd: "shell" }));
+  assert.doesNotThrow(() =>
+    validateIntent({
+      cmd: "live-start",
+      confirmation: "START_CONFIGURED_OUTPUTS",
+      checkedPictureAndVoice: true,
+    }),
+  );
+});
+test("wrong profile blocks modifications", async () => {
+  const writes = [];
+  const obs = {
+    call: async (m) => {
+      writes.push(m);
+      return m === "GetProfileList"
+        ? { currentProfileName: "Other" }
+        : { currentSceneCollectionName: "Anima" };
+    },
+  };
+  const c = await createController(base, obs);
+  await assert.rejects(c.dispatch({ cmd: "scene", scene: "pantalla" }));
+  assert.deepEqual(writes, ["GetProfileList", "GetSceneCollectionList"]);
+});
+test("horizontal-only status works without plugins and never starts outputs", async () => {
+  const calls = [];
+  const obs = {
+    call: async (m) => {
+      calls.push(m);
+      switch (m) {
+        case "GetProfileList":
+          return { currentProfileName: "Anima" };
+        case "GetSceneCollectionList":
+          return { currentSceneCollectionName: "Anima" };
+        case "GetRecordStatus":
+          return { outputActive: false };
+        case "GetCurrentProgramScene":
+          return { currentProgramSceneName: "Talk" };
+        case "GetStats":
+          return { availableDiskSpace: 10240, activeFps: 30 };
+        case "GetInputMute":
+          return { inputMuted: false };
+        case "GetStreamStatus":
+          return { outputActive: false };
+        case "GetOutputList":
+          return { outputs: [] };
+        case "GetSourceScreenshot":
+          return { imageData: "data:image/jpeg;base64,AA==" };
+        default:
+          throw Error(m);
+      }
+    },
+  };
+  const c = await createController(base, obs);
+  const s = await c.dispatch({ cmd: "prepare" });
+  assert.equal(s.sceneKey, "charla");
+  assert.equal(s.verticalEnabled, false);
+  assert.ok(
+    !calls.some((x) => x.startsWith("Start") || x === "CallVendorRequest"),
+  );
+});
