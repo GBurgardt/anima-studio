@@ -1,0 +1,19 @@
+{
+  "obs": { "url": "ws://127.0.0.1:4455", "password": "" },
+  "profile": "Anima",
+  "collection": "Anima",
+  "scenes": { "charla": "Talk", "pantalla": "Screen", "pausa": "Pause" },
+  "microphone": "Mic",
+  "screenInput": "Desktop NDI",
+  "recordingDirectory": "/Users/YOUR_USER/Movies/Anima",
+  "outputs": [],
+  "vertical": {
+    "enabled": false,
+    "canvasUuid": "",
+    "scenes": {
+      "charla": "Vertical Talk",
+      "pantalla": "Vertical Screen",
+      "pausa": "Vertical Pause"
+    }
+  }
+}

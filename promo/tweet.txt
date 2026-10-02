@@ -1,0 +1,10 @@
+i just wanted to stream while building stuff. ended up making a remote control room lol.
+
+OBS lives on a spare Mac. My main Mac picks the monitor, switches scenes and zooms the vertical feed without touching the horizontal one.
+
+The server handles the broadcast and recordings. I stay on the machine where I'm actually working.
+
+Called it Anima Studio. macOS beta, open source.
+
+If you've got a spare Mac sitting around, give it a job 👇
+https://github.com/GBurgardt/anima-studio

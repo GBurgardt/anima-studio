@@ -1,0 +1,13 @@
+{
+  "name": "anima-studio",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=22.4"
+  },
+  "scripts": {
+    "test": "node --test bridge/*.test.mjs",
+    "discover": "node bridge/controller.mjs --discover"
+  }
+}
